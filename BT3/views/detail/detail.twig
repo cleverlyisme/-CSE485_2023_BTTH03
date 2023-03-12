@@ -1,0 +1,21 @@
+{% include 'includes/header.twig' %}
+
+<main class="container mt-5">
+    <div class="row mb-5">
+        <div class="col-sm-4">
+            <img src="./assets/images/songs/{{ article.getImage() }}" class="img-fluid" alt="Ảnh bài hát">
+        </div>
+        <div class="col-sm-8">
+            <h5 class="card-title mb-2">
+                <a href="#" class="text-decoration-none">{{ article.getTitle() }}</a>
+            </h5>
+            <p class="card-text"><span class=" fw-bold">Bài hát: </span>{{ article.getSongName() }}</p>
+            <p class="card-text"><span class=" fw-bold">Thể loại: </span>{{ article.getCategoryName }}</p>
+            <p class="card-text"><span class=" fw-bold">Tóm tắt: </span>{{ article.getBrief() }}</p>
+            <p class="card-text"><span class=" fw-bold">Nội dung: </span>{{ article.getContent() }}</p>
+            <p class="card-text"><span class=" fw-bold">Tác giả: </span>{{ article.getAuthorName() }}</p>
+        </div>
+    </div>
+</main>
+
+{% include 'includes/footer.twig' %}

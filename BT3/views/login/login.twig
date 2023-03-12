@@ -1,10 +1,7 @@
-<?php
-    include_once './views/includes/boostrap.php';
-    include APP_ROOT . '/views/includes/header.php';
-?>
-</header>
+{% include 'includes/header.twig' %}
+
 <main class="container mt-5 mb-5">
-    <form action="?controller=auth&action=login" method="POST">
+    <form action="auth/login" method="post">
         <div class="d-flex justify-content-center h-100">
             <div class="card">
                 <div class="card-header">
@@ -19,12 +16,12 @@
                     <form>
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="txtUser"><i class="fas fa-user"></i></span>
-                            <input type="text" class="form-control" placeholder="username" name="username" value=<?= $username ?>>
+                            <input type="text" class="form-control" placeholder="username" name="username" value="{{ username }}">
                         </div>
 
                         <div class="input-group mb-3">
                             <span class="input-group-text" id="txtPass"><i class="fas fa-key"></i></span>
-                            <input type="password" class="form-control" placeholder="password" name="password" value=<?= $password ?>>
+                            <input type="password" class="form-control" placeholder="password" name="password" value="{{ password }}">
                         </div>
 
                         <div class="d-flex remember-me">
@@ -48,6 +45,5 @@
         </div>
     </form>
 </main>
-<?php
-    include APP_ROOT . '/views/includes/footer.php';
-?>
+
+{% include 'includes/footer.twig' %}

@@ -6,11 +6,9 @@ use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\Matcher\UrlMatcher;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use FastRoute\Dispatcher\GroupCountBased;
-use FastRoute\RouteParser\Std as RouteParser;
 
 // Define your routes
-$routes = require 'includes/routes.php';
+$routes = require_once 'includes/routes.php';
 
 // Initialize the routing context
 $request = Request::createFromGlobals();

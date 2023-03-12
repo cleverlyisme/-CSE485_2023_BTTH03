@@ -10,18 +10,18 @@ class ArticleService
 
     public function get($id)
     {
-        $sql = "SELECT * FROM baiviet LEFT JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai LEFT JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia WHERE ma_bviet=:ma_bviet;";
+        $sql = "SELECT * FROM baiviet LEFT JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai LEFT JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia WHERE ma_bviet = :ma_bviet;";
 
         $arguments = ['ma_bviet' => $id];
 
-        $articleDB = $this->db->runSql($sql, $arguments)->fetch();
+        $articleDB = $this->db->runSQL($sql, $arguments)->fetch();
 
         $article = new Article(
             $articleDB['ma_bviet'],
             $articleDB['tieude'],
             $articleDB['ten_bhat'],
             $articleDB['ma_tloai'],
-            $articleDB['ten-tloai'],
+            $articleDB['ten_tloai'],
             $articleDB['tomtat'],
             $articleDB['noidung'],
             $articleDB['ma_tgia'],
@@ -39,30 +39,34 @@ class ArticleService
 
         $arguments = ['tieude' => $name];
 
-        $articleDB = $this->db->runSql($sql, $arguments)->fetch();
+        $articlesDB = $this->db->runSQL($sql, $arguments)->fetchAll();
 
-        $article = new Article(
-            $articleDB['ma_bviet'],
-            $articleDB['tieude'],
-            $articleDB['ten_bhat'],
-            $articleDB['ma_tloai'],
-            $articleDB['ten-tloai'],
-            $articleDB['tomtat'],
-            $articleDB['noidung'],
-            $articleDB['ma_tgia'],
-            $articleDB['ten_tgia'],
-            $articleDB['ngayviet'],
-            $articleDB['hinhanh']
-        );
+        $articles = array_map(function ($articleDB) {
+            $article = new Article(
+                $articleDB['ma_bviet'],
+                $articleDB['tieude'],
+                $articleDB['ten_bhat'],
+                $articleDB['ma_tloai'],
+                $articleDB['ten_tloai'],
+                $articleDB['tomtat'],
+                $articleDB['noidung'],
+                $articleDB['ma_tgia'],
+                $articleDB['ten_tgia'],
+                $articleDB['ngayviet'],
+                $articleDB['hinhanh']
+            );
 
-        return $article;
+            return $article;
+        }, $articlesDB);
+
+        return $articles;
     }
 
     public function getAll()
     {
         $sql = "SELECT * FROM baiviet LEFT JOIN theloai ON baiviet.ma_tloai = theloai.ma_tloai LEFT JOIN tacgia ON baiviet.ma_tgia = tacgia.ma_tgia;";
 
-        $articlesDB = $this->db->runSql($sql)->fetchAll();
+        $articlesDB = $this->db->runSQL($sql)->fetchAll();
 
         $articles = array_map(function ($articleDB) {
             $article = new Article(
@@ -89,7 +93,7 @@ class ArticleService
     {
         $sql = "SELECT COUNT(*) as count FROM baiviet;";
 
-        return $this->db->runSql($sql)->fetch()['count'];
+        return $this->db->runSQL($sql)->fetch()['count'];
     }
 
     public function insert()
@@ -108,12 +112,14 @@ class ArticleService
             $ngayviet = $_POST["ngayviet"];
 
             if ($tieude == '' || $ten_bhat == '' || $tomtat == '' || $ngayviet == '') {
-                header("Location: ?controller=article&action=add&error='Giá trị không hợp lệ'");
+                header("Location: ./?error='Giá trị không hợp lệ'");
                 exit();
             }
 
             if (!basename($_FILES["imgUpload"]["name"])) {
-                $result = $this->articleModel->insertWithoutImg([
+                $sql = "INSERT INTO baiviet (tieude, ten_bhat, ma_tloai, tomtat, noidung, ma_tgia, ngayviet) VALUE (:tieude, :ten_bhat, :ma_tloai, :tomtat, :noidung, :ma_tgia, :ngayviet);";
+
+                $result = $this->db->runSql($sql, [
                     'tieude' => $tieude,
                     'ten_bhat' => $ten_bhat,
                     'ma_tloai' => $ma_tloai,

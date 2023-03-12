@@ -1,5 +1,6 @@
 {% set paths = [
-    {'name': 'Đăng nhập', 'path': '?controller=auth'}
+    {'name': 'Trang chủ', 'path': 'home'},
+    {'name': 'Đăng nhập', 'path': 'auth'}
 ] %}
 
 <!DOCTYPE html>
@@ -19,7 +20,7 @@
             <nav class="navbar navbar-expand-lg bg-body-tertiary shadow p-3 bg-white rounded">
                 <div class="container-fluid">
                     <div class="my-logo">
-                        <a class="navbar-brand" href="?controller=home">
+                        <a class="navbar-brand" href="./home">
                             <img src="./assets/images/logo.png" alt="" class="img-fluid">
                         </a>
                     </div>
@@ -29,16 +30,16 @@
                     </button>
                     <div class="collapse navbar-collapse px-5" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link {{ (paths|filter(path => app.request.uri|contains(path.path))|length) == 0 ? 'active' : '' }}" aria-current="page" href="?controller=Home">Trang chủ</a>
-                            </li>
+                            {#<li class="nav-item">
+                                <a class="nav-link {{ (paths|filter(path => app.request.uri|contains(path.path))|length) == 0 ? 'active' : '' }}" aria-current="page" href="./home">Trang chủ</a>
+                            </li> #}
                             {% for path in paths %}
                                 <li class="nav-item">
-                                    <a class="nav-link {{ app.request.uri|contains(path.path) ? 'active' : '' }}" aria-current="page" href="./{{ path.path }}">{{ path.name }}</a>
+                                    <a class="nav-link {{ app.request.uri|contains(path.path) ? '' : 'active' }}" aria-current="page" href="./{{ path.path }}">{{ current_path }}</a>
                                 </li>
                             {% endfor %}
                         </ul>
-                        <form class="d-flex" action="?controller=home&action=search" method="post" role="search">
+                        <form class="d-flex" action="search" method="post" role="search">
                             <input class="form-control me-2" type="search" placeholder="Nội dung cần tìm" aria-label="Search" name="search">
                             <button class="btn btn-outline-success" type="submit">Tìm</button>
                         </form>

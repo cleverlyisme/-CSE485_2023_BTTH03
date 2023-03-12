@@ -1,38 +1,36 @@
 <?php
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 
 $routes = new RouteCollection();
 
-// Define your routes here
 $routesArray = [
     [
-        'path' => '/',
+        'path' => '/home',
         'controller' => 'HomeController',
         'action' => 'index'
     ],
     [
-        'path' => '/articles/{id}',
-        'controller' => 'DetailController',
-        'action' => 'index'
-    ],
-    [
-        'path' => '/admin',
-        'controller' => 'AdminController',
-        'action' => 'index'
-    ],
-    [
-        'path' => '/articles/{id}',
-        'controller' => 'DetailController',
-        'action' => 'index'
-    ],
-    [
-        'path' => '/{undefinedRoute}',
+        'path' => '/search',
         'controller' => 'HomeController',
+        'action' => 'search'
+    ],
+    [
+        'path' => '/articles',
+        'controller' => 'DetailController',
         'action' => 'index'
-    ]
+    ],
+    [
+        'path' => '/auth',
+        'controller' => 'AuthController',
+        'action' => 'index'
+    ],
+    [
+        'path' => '/auth/login',
+        'controller' => 'AuthController',
+        'action' => 'login'
+    ],
 ];
 
 foreach ($routesArray as $route) {
@@ -40,16 +38,10 @@ foreach ($routesArray as $route) {
     $controller = $route['controller'];
     $action = $route['action'];
 
-    $routes->add($route['path'], new Route($route['path'], [
+    $routes->add($path, new Route($path, [
         '_controller' => $controller,
         '_action' => $action
     ]));
 }
-
-$routes->add('/{undefinedRoute}', new Route('/{undefinedRoute}', [
-    '_controller' => function () {
-        return new RedirectResponse('/', 301);
-    }
-]));
 
 return $routes;

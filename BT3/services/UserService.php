@@ -1,16 +1,26 @@
 <?php
-class UserService {
-    private $userModel;
+class UserService
+{
+    private $db;
 
-    public function __construct() {
-        $this->userModel = new User();                               
+    public function __construct()
+    {
+        $this->db = new Database();
     }
 
-    public function login($username, $password) {
-        return $this->userModel->get($username, $password);
+    public function login($username, $password)
+    {
+        $sql = "SELECT * FROM users WHERE (username=:username OR email=:username) and password=:password";
+
+        $arguments = ['username' => $username, 'password' => $password];
+
+        return $this->db->runSQL($sql, $arguments)->fetch();
     }
-    
-    public function getCount() {
-        return $this->userModel->getCount();
+
+    public function getCount()
+    {
+        $sql = "SELECT COUNT(*) as count FROM users;";
+
+        return $this->db->runSQL($sql)->fetch()['count'];
     }
 }

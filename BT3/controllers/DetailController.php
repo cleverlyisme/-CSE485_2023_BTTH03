@@ -20,14 +20,18 @@ class DetailController
         $this->articleService = new ArticleService();
     }
 
-    public function index()
+    public function index($params)
     {
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
         if (!$id) header("Location: ./home");
 
-        $data = $this->articleService->get($id);
+        $article = $this->articleService->get($id);
 
-        include("views/detail/detail.php");
+        if (!$article) header("Location: ./home");
+
+        $content = $this->twig->render('detail/detail.twig', ['article' => $article]);
+        $response = new Response($content);
+        return $response;
     }
 }

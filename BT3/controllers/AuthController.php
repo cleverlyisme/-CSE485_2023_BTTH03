@@ -1,28 +1,46 @@
 <?php
-// include 'views/includes/boostrap.php';
+
+require_once './vendor/autoload.php';
+
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+
 class AuthController
 {
+    private $twig;
     private $userService;
 
     public function __construct()
     {
+        $loader = new FilesystemLoader('views');
+        $this->twig = new Environment($loader);
+        $this->twig->addExtension(new MyTwigExtension());
+
         $this->userService = new UserService();
     }
 
-    public function index()
+    public function index(Request $request)
     {
         session_start();
 
         $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
         $password = isset($_SESSION['password']) ? $_SESSION['password'] : '';
 
-        if (isset($_SESSION['user'])) header('Location: ?controller=admin');
+        if (isset($_SESSION['user'])) header('Location: ./home');
 
         if (isset($_GET['error'])) {
             echo "<script>alert({$_GET['error']})</script>";
         }
 
-        include("views/login/login.php");
+        $content = $this->twig->render('login/login.twig', [
+            'username' => $username,
+            'password' => $password,
+            'current_path' => $request->getPathInfo()
+        ]);
+        $response = new Response($content);
+        return $response;
     }
 
     public function login()

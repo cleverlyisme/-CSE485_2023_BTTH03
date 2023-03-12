@@ -31,12 +31,12 @@ class HomeController
 
     public function search()
     {
-        if (isset($_POST['search']))
-            $data = $_POST['search'] != '' ?
-                $this->articleService->getByName($_POST['search'])
-                : $this->articleService->getAll();
-        else $data = $this->articleService->getAll();
+        $articles = $_POST['search'] ?
+            $this->articleService->getByName($_POST['search'])
+            : $this->articleService->getAll();
 
-        include("views/home/index.php");
+        $content = $this->twig->render('home/index.twig', ['articles' => $articles]);
+        $response = new Response($content);
+        return $response;
     }
 }
