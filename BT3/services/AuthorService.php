@@ -1,119 +1,192 @@
 <?php
-class AuthorService {
-    private $authorModel;
+class AuthorService
+{
+    private $db;
 
-    public function __construct() {
-        $this->authorModel = new Author();
-    }
-    public function get($id) {
-        
-        return $this->authorModel->get($id);
-    }
-    public function getAll() {
-        return $this->authorModel->getAll();
-    }
-    
-    public function getCount() {
-        return $this->authorModel->getCount();
+    public function __construct()
+    {
+        $this->db = new Database();
     }
 
-    public function insert() {
+    public function get($id)
+    {
+        $sql = "SELECT ma_tgia, ten_tgia, hinh_tgia FROM tacgia WHERE ma_tgia=:ma_tgia;";
+
+        $arguments = ['ma_tgia' => $id];
+
+        $authorDB = $this->db->runSql($sql, $arguments)->fetch();
+
+        $author = new Author($authorDB['ma_tgia'], $authorDB['ten_tgia'], $authorDB['hinh_tgia']);
+
+        return $author;
+    }
+
+    public function getAll()
+    {
+        $sql = "SELECT * FROM tacgia;";
+
+        $authorsDB = $this->db->runSql($sql)->fetchAll();
+
+        $authors = array_map(function ($authorDB) {
+            $author = new Author($authorDB['ma_tgia'], $authorDB['ten_tgia'], $authorDB['hinh_tgia']);
+
+            return $author;
+        }, $authorsDB);
+
+        return $authors;
+    }
+
+    public function getCount()
+    {
+        $sql = "SELECT COUNT(*) as count FROM tacgia;";
+
+        return $this->db->runSql($sql)->fetch()['count'];
+    }
+
+    public function insert()
+    {
         $target_dir = "./assets/images/author/";
         $target_file = $target_dir . basename($_FILES["imgUpload"]["name"]);
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-        if(isset($_POST)) {
+        if (isset($_POST)) {
             $ten_tgia = $_POST["ten_tgia"];
+
             if ($ten_tgia == '') {
-                header("Location: ?controller=author&action=add&error='Giá trị không hợp lệ'");
+                header("Location: ../add_author?error='Giá trị không hợp lệ'");
                 exit();
             }
 
-            if (!basename($_FILES["imgUpload"]["name"])) {    
-                $result = $this->authorModel->insertWithoutImg([
-                    'ten_tgia' => $ten_tgia, 
-                ]);
+            if (!basename($_FILES["imgUpload"]["name"])) {
+                $sql = "INSERT INTO tacgia (ten_tgia) VALUE (:ten_tgia);";
 
-                    if ($result) header("Location: ?controller=author");
-                    else header("Location: ?controller=author&error='Thêm thất bại'");
-                    header("Location: ?controller=author&error='Thêm thất bại'");
-                } else {
-                    $check = getimagesize($_FILES["imgUpload"]["tmp_name"]);
-                    if(!$check) 
-                        header("Location: ?controller=author&action=edit&id=$ma_tgia&error='File is not an image.'");
-                    
-                    if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-                    && $imageFileType != "gif" ) 
-                        header("Location: ?controller=author&action=edit&id=$ma_tgia&error='Sorry, only JPG, JPEG, PNG & GIF files are allowed.'");
-                
-                    if (move_uploaded_file($_FILES["imgUpload"]["tmp_name"], $target_file)) {
-                        $result = $this->authorModel->insert([
-                            'ten_tgia' => $ten_tgia, 
-                            'hinh_tgia' => basename($_FILES["imgUpload"]["name"])
-                        ]);
-                        if ($result) header("Location: ?controller=author");
-                        else header("Location: ?controller=author&error='Thêm thất bại'");
-                    } else {
-                        header("Location: ?controller=author&error='Thêm thất bại'");
-                    }
+                $arguments = ['ten_tgia' => $ten_tgia];
+
+                $result = $this->db->runSql($sql, $arguments);
+
+                if ($result) {
+                    header("Location: ../authors");
+                    exit();
                 }
-    }
 
-}
-public function update() {
-    $target_dir = './assets/images/author/';
-    $target_file = $target_dir . basename($_FILES["imgUpload"]["name"]);
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-    if(isset($_POST["submit"])) {
-        $ma_tgia = $_POST["ma_tgia"];
-        $ten_tgia = $_POST["ten_tgia"];
-
-        if ($ten_tgia == '') {
-            header("Location: ?controller=author&action=edit&id=$ma_tgia&error='Giá trị không hợp lệ'");
-            exit();
-        }
-
-        if (!basename($_FILES["imgUpload"]["name"])) {
-            $result = $this->authorModel->updateWithoutImg([
-                'ma_tgia' => $ma_tgia, 
-                'ten_tgia' => $ten_tgia, 
-            ]);
-
-            if ($result) header("Location: ?controller=author");
-            else header("Location: ?controller=author&error='Cập nhật thất bại'");
-        } else {
-            $check = getimagesize($_FILES["imgUpload"]["tmp_name"]);
-            if(!$check) 
-                header("Location: ?controller=author&action=edit&id=$ma_tgia&error='File is not an image.'");
-            
-            if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-            && $imageFileType != "gif" ) 
-                header("Location: ?controller=author&action=edit&id=$ma_tgia&error='Sorry, only JPG, JPEG, PNG & GIF files are allowed.'");
-
-            if (move_uploaded_file($_FILES["imgUpload"]["tmp_name"], $target_file)) {
-                $result = $this->authorModel->update([
-                    'ma_tgia' => $ma_tgia, 
-                    'ten_tgia' => $ten_tgia, 
-                    'hinh_tgia' => basename($_FILES["imgUpload"]["name"])
-
-                ]);
-
-                if ($result) header("Location: ?controller=author");
-                else header("Location: ?controller=author&error='Cập nhật thất bại'"); 
+                header("Location: ../authors?error='Thêm thất bại'");
+                exit();
             } else {
-                header("Location: ?controller=author&error='Cập nhật ảnh thất bại'");
+                $check = getimagesize($_FILES["imgUpload"]["tmp_name"]);
+
+                if (!$check)
+                    header("Location: ../add_author?error='Ảnh không hợp lệ'");
+                exit();
+
+                if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                    header("Location: ../add_author?error='Ảnh không hợp lệ'");
+                    exit();
+                }
+
+                if (move_uploaded_file($_FILES["imgUpload"]["tmp_name"], $target_file)) {
+                    $sql = "INSERT INTO tacgia (ten_tgia, hinh_tgia) VALUE (:ten_tgia, :hinh_tgia);";
+
+                    $arguments = [
+                        'ten_tgia' => $ten_tgia,
+                        'hinh_tgia' => basename($_FILES["imgUpload"]["name"])
+                    ];
+
+                    $result = $this->db->runSQL($sql, $arguments);
+
+                    if ($result) {
+                        header("Location: ../authors");
+                        exit();
+                    }
+                    header("Location: ../add_category?error='Thêm thất bại'");
+                    exit();
+                }
+
+                header("Location: ../add_category?error='Thêm thất bại'");
+                exit();
             }
         }
     }
-}
-public function delete() {
-    $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-    if (!$id) header("Location: ?controller=author");
+    public function update()
+    {
+        $target_dir = './assets/images/authors/';
+        $target_file = $target_dir . basename($_FILES["imgUpload"]["name"]);
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-   $result = $this->authorModel->delete(['ma_tgia' => $id]);
+        if (isset($_POST["submit"])) {
+            $ma_tgia = $_POST["ma_tgia"];
+            $ten_tgia = $_POST["ten_tgia"];
 
-   if ($result) header("Location: ?controller=author");
-    else header("Location: ?controller=author&error='Xóa thất bại'");
-}
+            if ($ten_tgia == '') {
+                header("Location: ?controller=author&action=edit&id=$ma_tgia&error='Giá trị không hợp lệ'");
+                exit();
+            }
+
+            if (!basename($_FILES["imgUpload"]["name"])) {
+                $sql = "UPDATE tacgia SET ten_tgia=:ten_tgia WHERE ma_tgia=:ma_tgia;";
+
+                $arguments = ['ma_tgia' => $ma_tgia, 'ten_tgia' => $ten_tgia,];
+
+                $result =  $this->db->runSQL($sql, $arguments);
+
+                if ($result) {
+                    header("Location: ../authors");
+                    exit();
+                }
+                header("Location: ../edit_author?id=$ma_tgia&error='Cập nhật thất bại'");
+                exit();
+            } else {
+                $check = getimagesize($_FILES["imgUpload"]["tmp_name"]);
+                if (!$check) {
+                    header("Location: ../edit_author?id=$ma_tgia&error='Ảnh không hợp lệ'");
+                    exit();
+                }
+
+                if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                    header("Location: ../edit_author?id=$ma_tgia&error='Không phải ảnh'");
+                    exit();
+                }
+
+                if (move_uploaded_file($_FILES["imgUpload"]["tmp_name"], $target_file)) {
+                    $sql = "UPDATE tacgia SET ten_tgia=:ten_tgia, hinh_tgia=:hinh_tgia WHERE ma_tgia=:ma_tgia;";
+
+                    $arguments = [
+                        'ma_tgia' => $ma_tgia,
+                        'ten_tgia' => $ten_tgia,
+                        'hinh_tgia' => basename($_FILES["imgUpload"]["name"])
+                    ];
+
+                    $result = $this->db->runSql($sql, $arguments);
+
+                    if ($result) {
+                        header("Location: ../authors");
+                        exit();
+                    }
+                    header("Location: ../edit_author?id=$ma_tgia&error='Cập nhật thất bại'");
+                    exit();
+                }
+                header("Location: ?controller=author&error='Cập nhật ảnh thất bại'");
+                exit();
+            }
+        }
+    }
+
+    public function delete()
+    {
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+        if (!$id) header("Location: ../authors");
+
+        $sql = "DELETE FROM tacgia WHERE ma_tgia=:ma_tgia;";
+
+        $arguments = ['ma_tgia' => $id];
+
+        $result = $this->db->runSql($sql, $arguments);
+
+        if ($result) {
+            header("Location: ../authors");
+            exit();
+        }
+
+        header("Location: ../add_category?error='Xóa thất bại'");
+    }
 }

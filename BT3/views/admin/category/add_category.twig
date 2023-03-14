@@ -1,0 +1,20 @@
+{% include 'includes/headerAdmin.twig' %}
+
+<main class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-sm">
+            <h3 class="text-center text-uppercase fw-bold">Thêm mới thể loại</h3>
+            <form action="./category/insert" method="post" enctype="multipart/form-data">
+                <div class="input-group mt-3 mb-3">
+                    <span class="input-group-text" id="lblCatName">Tên thể loại</span>
+                    <input type="text" name="ten_tloai" class="form-control" name="txtCatName">
+                </div>
+
+                <button class="btn btn-success" type="submit">Thêm</button>
+                <a href="./categories" class="btn btn-warning ">Quay lại</a>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% include 'includes/footer.twig' %}

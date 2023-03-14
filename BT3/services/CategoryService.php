@@ -10,18 +10,37 @@ class CategoryService
 
     public function get($id)
     {
-        // return $result =  $this->categoryModel->get($id);
+        $sql = "SELECT ma_tloai, ten_tloai FROM theloai WHERE ma_tloai=:ma_tloai;";
 
+        $arguments = ['ma_tloai' => $id];
+
+        $categoryDB = $this->db->runSQL($sql, $arguments)->fetch();
+
+        $category = new Category($categoryDB['ma_tloai'], $categoryDB['ten_tloai']);
+
+        return $category;
     }
 
     public function getAll()
     {
-        // return $this->categoryModel->getAll();
+        $sql = "SELECT * FROM theloai;";
+
+        $categoriesDB = $this->db->runSQL($sql)->fetchAll();
+
+        $categories = array_map(function ($categoryDB) {
+            $category = new Category($categoryDB['ma_tloai'], $categoryDB['ten_tloai']);
+
+            return $category;
+        }, $categoriesDB);
+
+        return $categories;
     }
 
     public function getCount()
     {
-        // return $this->categoryModel->getCount();
+        $sql = "SELECT COUNT(*) as count FROM theloai;";
+
+        return $this->db->runSql($sql)->fetch()['count'];
     }
 
     public function insert()
@@ -30,17 +49,22 @@ class CategoryService
             $ten_tloai = $_POST["ten_tloai"];
 
             if ($ten_tloai == '') {
-                header("Location: ?controller=category&action=add&error='Giá trị không hợp lệ'");
+                header("Location: ../add_category?error='Giá trị không hợp lệ'");
                 exit();
             }
 
-            $result = $this->db->insert([
-                'ten_tloai' => $ten_tloai,
-            ]);
+            $sql = "INSERT INTO theloai (ten_tloai) VALUE (:ten_tloai);";
 
-            if ($result) header("Location: ?controller=category");
-            else header("Location: ?controller=category&error='Thêm thất bại'");
-            header("Location: ?controller=category&error='Thêm thất bại'");
+            $arguments = ['ten_tloai' => $ten_tloai];
+
+            $result = $this->db->runSQL($sql, $arguments);
+
+            if ($result) {
+                header("Location: ../categories");
+                exit();
+            }
+            header("Location: ../add_category?error='Thêm thất bại'");
+            exit();
         }
     }
 
@@ -51,18 +75,22 @@ class CategoryService
             $ten_tloai = $_POST["ten_tloai"];
 
             if ($ten_tloai == '') {
-                header("Location: ?controller=article&action=edit&id=$ma_bviet&error='Giá trị không hợp lệ'");
+                header("Location: ../edit_category?id=$ma_tloai&error='Giá trị không hợp lệ'");
                 exit();
             }
 
-            $result = $this->categoryModel->update([
-                'ma_tloai' => $ma_tloai,
-                'ten_tloai' => $ten_tloai,
+            $sql = "UPDATE theloai SET ten_tloai=:ten_tloai WHERE ma_tloai=:ma_tloai;";
 
-            ]);
+            $arguments = ['ma_tloai' => $ma_tloai, 'ten_tloai' => $ten_tloai];
 
-            if ($result) header("Location: ?controller=category");
-            else header("Location: ?controller=category&error='Cập nhật thất bại'");
+            $result = $this->db->runSql($sql, $arguments);
+
+            if ($result) {
+                header("Location: ../categories");
+                exit();
+            }
+            header("Location: ../edit_category?id=$ma_tloai&error='Giá trị không hợp lệ'");
+            exit();
         }
     }
 
@@ -71,11 +99,22 @@ class CategoryService
     {
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-        if (!$id) header("Location: ?controller=category");
+        if (!$id) {
+            header("Location: ../categories");
+            exit();
+        }
 
-        $result = $this->categoryModel->delete(['ma_tloai' => $id]);
+        $sql = "DELETE FROM theloai WHERE ma_tloai=:ma_tloai;";
 
-        if ($result) header("Location: ?controller=category");
-        else header("Location: ?controller=category&error='Xóa thất bại'");
+        $arguments = ['ma_tloai' => $id];
+
+        $result = $this->db->runSql($sql, $arguments);
+
+        if ($result) {
+            header("Location: ../categories");
+            exit();
+        }
+        header("Location: ../categories?error='Xóa thất bại'");
+        exit();
     }
 }

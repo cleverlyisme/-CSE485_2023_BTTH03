@@ -1,8 +1,8 @@
 {% set paths = [
 {'name': 'Trang ngoài', 'path': '../home', 'include': 'homepage'},
-{'name': 'Thể loại', 'path': 'categories'},
-{'name': 'Tác giả', 'path': 'authors'},
-{'name': 'Bài viết', 'path': 'articles'}
+{'name': 'Thể loại', 'path': 'categories', 'include': 'category'},
+{'name': 'Tác giả', 'path': 'authors', 'include': 'author'},
+{'name': 'Bài viết', 'path': 'articles', 'incldue': 'article'}
 ] %}
 <!DOCTYPE html>
 <html lang="en">
@@ -15,6 +15,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.3.0/css/all.min.css" integrity="sha512-SzlrxWUlpfuzQ+pcUCosxcglQRNAq/DZjVsC0lE40xsADsfeQoEypE+enwcOiGjk/bSuGGKHEyjSoQ1zVisanQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="../assets/css/style_login.css">
+    <link rel="stylesheet" href="../../assets/css/style_login.css">
 </head>
 
 <body>
@@ -30,11 +31,11 @@
                 <div class="collapse navbar-collapse px-5" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link {{ (paths|filter(path => path.path in APP_ROOT))|length == 0 ? 'active' : '' }}" aria-current="page" href="./home">Trang chủ</a>
+                            <a class="nav-link {{ (paths|filter(path => path.include in APP_ROOT or path.path in APP_ROOT))|length == 0 ? 'active' : '' }}" aria-current="page" href="./home">Trang chủ</a>
                         </li> 
                         {% for path in paths %}
                                 <li class="nav-item">
-                                    <a class="nav-link {{ path.path in APP_ROOT ? 'active' : '' }}" aria-current="page" href="./{{ path.path }}">{{ path.name }}</a>
+                                    <a class="nav-link {{ (path.path in APP_ROOT or path.include in APP_ROOT) ? 'active' : '' }}" aria-current="page" href="./{{ path.path }}">{{ path.name }}</a>
                                 </li>
                         {% endfor %}
                     </ul>

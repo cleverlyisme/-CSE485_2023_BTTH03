@@ -1,0 +1,37 @@
+{% include 'includes/headerAdmin.twig' %}
+
+<main class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-sm">
+            <a href="./add_category" class="btn btn-success">Thêm mới</a>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Tên thể loại</th>
+                        <th>Sửa</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for category in categories %}
+                    <tr>
+                        <th>{{ category.getId() }}</th>
+                        <td>{{ category.getName() }}</td>
+                        <td>
+                            <a href="./edit_category?id={{ category.getId() }}"><i
+                                    class="fa-solid fa-pen-to-square"></i></a>
+                        </td>
+                        <td>
+                            <a href="./delete_category?id={{ category.getId() }}" name="delete"><i
+                                    class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+{% include 'includes/footer.twig' %}

@@ -1,0 +1,39 @@
+{% include 'includes/headerAdmin.twig' %}
+
+<main class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-sm">
+            <a href="./add_author" class="btn btn-success">Thêm mới</a>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Tên tác giả</th>
+                        <th scope="col">Ảnh tác giả</th>
+                        <th>Sửa</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for author in authors %}
+                    <tr>
+                        <th>{{ author.getId() }}</th>
+                        <td>{{ author.getName() }}</td>
+                        <td class="w-25"><img src="../assets/images/authors/{{ author.getImage() }}" alt="" class="w-25 "></td>
+                        <td>
+                            <a href="./edit_author?id={{ author.getId() }}"><i
+                                    class="fa-solid fa-pen-to-square"></i></a>
+                        </td>
+                        <td>
+                            <a href="./delete_author?id={{ author.getId() }}"><i
+                                    class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+{% include 'includes/footer.twig' %}

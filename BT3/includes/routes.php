@@ -41,6 +41,76 @@ $routesArray = [
         'controller' => 'AdminController',
         'action' => 'index'
     ],
+    [
+        'path' => '/admin/categories',
+        'controller' => 'CategoryController',
+        'action' => 'index'
+    ],
+    [
+        'path' => '/admin/add_category',
+        'controller' => 'CategoryController',
+        'action' => 'add'
+    ],
+    [
+        'path' => '/admin/edit_category',
+        'controller' => 'CategoryController',
+        'action' => 'edit'
+    ],
+    [
+        'path' => '/admin/delete_category',
+        'controller' => 'CategoryController',
+        'action' => 'delete'
+    ],
+    [
+        'path' => '/admin/category/insert',
+        'controller' => 'CategoryController',
+        'action' => 'insert'
+    ],
+    [
+        'path' => '/admin/category/update',
+        'controller' => 'CategoryController',
+        'action' => 'update'
+    ],
+    [
+        'path' => '/admin/category/delete',
+        'controller' => 'CategoryController',
+        'action' => 'remove'
+    ],
+    [
+        'path' => '/admin/authors',
+        'controller' => 'AuthorController',
+        'action' => 'index'
+    ],
+    [
+        'path' => '/admin/add_author',
+        'controller' => 'AuthorController',
+        'action' => 'add'
+    ],
+    [
+        'path' => '/admin/edit_author',
+        'controller' => 'AuthorController',
+        'action' => 'edit'
+    ],
+    [
+        'path' => '/admin/delete_author',
+        'controller' => 'AuthorController',
+        'action' => 'delete'
+    ],
+    [
+        'path' => '/admin/author/insert',
+        'controller' => 'AuthorController',
+        'action' => 'insert'
+    ],
+    [
+        'path' => '/admin/author/update',
+        'controller' => 'AuthorController',
+        'action' => 'update'
+    ],
+    [
+        'path' => '/admin/author/delete',
+        'controller' => 'AuthorController',
+        'action' => 'remove'
+    ],
 ];
 
 foreach ($routesArray as $route) {
