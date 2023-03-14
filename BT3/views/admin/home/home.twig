@@ -1,7 +1,5 @@
-<?php
-    include_once './views/includes/boostrap.php';
-    include APP_ROOT . '/views/includes/headerAdmin.php';
-?>
+{% include 'includes/headerAdmin.twig' %}
+
 <main class="container mt-5 mb-5">
     <div class="row">
         <div class="col-sm-3">
@@ -13,7 +11,7 @@
                         </h5>
 
                         <h5 class="h1 text-center">
-                            <?= $countUsers ?>
+                            {{ countUsers }}
                         </h5>
                     </div>
                 </div>
@@ -28,7 +26,7 @@
                             <a href="" class="text-decoration-none">Thể loại</a>
                         </h5>
                         <h5 class="h1 text-center">
-                            <?= $countCategories ?>
+                            {{ countCategories }}
                         </h5>
                     </div>
                 </div>
@@ -44,7 +42,7 @@
                         </h5>
 
                         <h5 class="h1 text-center">
-                            <?= $countAuthors ?>
+                            {{ countAuthors }}
                         </h5>
                     </div>
                 </div>
@@ -61,7 +59,7 @@
                         </h5>
 
                         <h5 class="h1 text-center">
-                            <?= $countArticles ?>
+                            {{ countArticles }}
                         </h5>
                     </div>
                 </div>
@@ -70,6 +68,5 @@
         </div>
     </div>
 </main>
-<?php
-    include APP_ROOT . '/views/includes/footer.php';
-?>
+
+{% include 'includes/footer.twig' %}

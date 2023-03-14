@@ -15,7 +15,6 @@ class DetailController
     {
         $loader = new FilesystemLoader('views');
         $this->twig = new Environment($loader);
-        $this->twig->addExtension(new MyTwigExtension());
 
         $this->articleService = new ArticleService();
     }
@@ -30,7 +29,10 @@ class DetailController
 
         if (!$article) header("Location: ./home");
 
-        $content = $this->twig->render('detail/detail.twig', ['article' => $article]);
+        $content = $this->twig->render(
+            'detail/detail.twig',
+            ['article' => $article, 'APP_ROOT' => $_SERVER['REQUEST_URI']]
+        );
         $response = new Response($content);
         return $response;
     }

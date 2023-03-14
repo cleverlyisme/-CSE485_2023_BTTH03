@@ -3,7 +3,7 @@ define('DEV', true);
 $this_folder   = substr(__DIR__, strlen($_SERVER['DOCUMENT_ROOT']));
 $parent_folder = dirname($this_folder, 2);
 define("DOC_ROOT", $parent_folder . '/views/');
-define('APP_ROOT', dirname(__FILE__, 2));
+define('APP_ROOT', dirname(__FILE__));
 
 if (DEV === false) {
     set_exception_handler('handle_exception');

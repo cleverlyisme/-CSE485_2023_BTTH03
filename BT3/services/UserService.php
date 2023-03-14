@@ -10,7 +10,7 @@ class UserService
 
     public function login($username, $password)
     {
-        $sql = "SELECT * FROM users WHERE (username=:username OR email=:username) and password=:password";
+        $sql = "SELECT * FROM users WHERE (name=:username OR email=:username) and password=:password";
 
         $arguments = ['username' => $username, 'password' => $password];
 

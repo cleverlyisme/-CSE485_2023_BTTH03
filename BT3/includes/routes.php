@@ -17,7 +17,7 @@ $routesArray = [
         'action' => 'search'
     ],
     [
-        'path' => '/articles',
+        'path' => '/article',
         'controller' => 'DetailController',
         'action' => 'index'
     ],
@@ -30,6 +30,16 @@ $routesArray = [
         'path' => '/auth/login',
         'controller' => 'AuthController',
         'action' => 'login'
+    ],
+    [
+        'path' => '/auth/logout',
+        'controller' => 'AuthController',
+        'action' => 'logout'
+    ],
+    [
+        'path' => '/admin/home',
+        'controller' => 'AdminController',
+        'action' => 'index'
     ],
 ];
 

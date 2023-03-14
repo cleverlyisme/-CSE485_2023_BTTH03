@@ -4,7 +4,6 @@ require_once './vendor/autoload.php';
 
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class AuthController
@@ -16,19 +15,18 @@ class AuthController
     {
         $loader = new FilesystemLoader('views');
         $this->twig = new Environment($loader);
-        $this->twig->addExtension(new MyTwigExtension());
 
         $this->userService = new UserService();
     }
 
-    public function index(Request $request)
+    public function index()
     {
         session_start();
 
         $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
         $password = isset($_SESSION['password']) ? $_SESSION['password'] : '';
 
-        if (isset($_SESSION['user'])) header('Location: ./home');
+        if (isset($_SESSION['user'])) header('Location: ../admin');
 
         if (isset($_GET['error'])) {
             echo "<script>alert({$_GET['error']})</script>";
@@ -37,7 +35,7 @@ class AuthController
         $content = $this->twig->render('login/login.twig', [
             'username' => $username,
             'password' => $password,
-            'current_path' => $request->getPathInfo()
+            'APP_ROOT' => $_SERVER['REQUEST_URI']
         ]);
         $response = new Response($content);
         return $response;
@@ -52,9 +50,9 @@ class AuthController
             $password = $_POST['password'];
             $remember = $_POST['remember'];
 
-            $data = $this->userService->login($username, $password);
+            $user = $this->userService->login($username, $password);
 
-            if ($data) {
+            if ($user) {
                 if ($remember) {
                     $_SESSION['username'] = $username;
                     $_SESSION['password'] = $password;
@@ -63,10 +61,13 @@ class AuthController
                     unset($_SESSION['password']);
                 }
 
-                $_SESSION['user'] = $data['username'];
-                header("Location: ?controller=admin");
+                $_SESSION['user'] = $username;
+
+                header("Location: ../admin/home");
+                exit();
             } else {
-                header("Location: ?controller=login&error='Invalid username or passowrd'");
+                header("Location: ../auth?error='Invalid username or passowrd'");
+                exit();
             }
         }
     }
@@ -76,8 +77,17 @@ class AuthController
         session_start();
         if (isset($_SESSION['user'])) {
             unset($_SESSION['user']);
-            // session_destroy();
-            header("Location: ?controller=auth");
+        }
+        header("Location: ../auth");
+        exit();
+    }
+
+    public static function checkUser()
+    {
+        session_start();
+        if (!isset($_SESSION['user'])) {
+            header("Location: ../auth");
+            exit();
         }
     }
 }

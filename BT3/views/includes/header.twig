@@ -1,5 +1,4 @@
 {% set paths = [
-    {'name': 'Trang chủ', 'path': 'home'},
     {'name': 'Đăng nhập', 'path': 'auth'}
 ] %}
 
@@ -30,12 +29,12 @@
                     </button>
                     <div class="collapse navbar-collapse px-5" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            {#<li class="nav-item">
-                                <a class="nav-link {{ (paths|filter(path => app.request.uri|contains(path.path))|length) == 0 ? 'active' : '' }}" aria-current="page" href="./home">Trang chủ</a>
-                            </li> #}
+                            <li class="nav-item">
+                                <a class="nav-link {{ (paths|filter(path => path.path in APP_ROOT))|length == 0 ? 'active' : '' }}" aria-current="page" href="./home">Trang chủ</a>
+                            </li> 
                             {% for path in paths %}
                                 <li class="nav-item">
-                                    <a class="nav-link {{ app.request.uri|contains(path.path) ? '' : 'active' }}" aria-current="page" href="./{{ path.path }}">{{ current_path }}</a>
+                                    <a class="nav-link {{ path.path in APP_ROOT ? 'active' : '' }}" aria-current="page" href="./{{ path.path }}">{{ path.name }}</a>
                                 </li>
                             {% endfor %}
                         </ul>

@@ -15,7 +15,6 @@ class HomeController
     {
         $loader = new FilesystemLoader('views');
         $this->twig = new Environment($loader);
-        $this->twig->addExtension(new MyTwigExtension());
 
         $this->articleService = new ArticleService();
     }
@@ -24,7 +23,10 @@ class HomeController
     {
         $articles = $this->articleService->getAll();
 
-        $content = $this->twig->render('home/index.twig', ['articles' => $articles]);
+        $content = $this->twig->render('home/index.twig', [
+            'articles' => $articles,
+            'APP_ROOT' => $_SERVER['REQUEST_URI'],
+        ]);
         $response = new Response($content);
         return $response;
     }
@@ -35,7 +37,10 @@ class HomeController
             $this->articleService->getByName($_POST['search'])
             : $this->articleService->getAll();
 
-        $content = $this->twig->render('home/index.twig', ['articles' => $articles]);
+        $content = $this->twig->render(
+            'home/index.twig',
+            ['articles' => $articles, 'APP_ROOT' => $_SERVER['REQUEST_URI']]
+        );
         $response = new Response($content);
         return $response;
     }
