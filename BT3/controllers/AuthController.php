@@ -26,7 +26,10 @@ class AuthController
         $username = isset($_SESSION['username']) ? $_SESSION['username'] : '';
         $password = isset($_SESSION['password']) ? $_SESSION['password'] : '';
 
-        if (isset($_SESSION['user'])) header('Location: ../admin');
+        if (isset($_SESSION['user'])) {
+            header('Location: ./admin/home');
+            exit();
+        }
 
         if (isset($_GET['error'])) {
             echo "<script>alert({$_GET['error']})</script>";

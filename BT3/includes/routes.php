@@ -111,6 +111,41 @@ $routesArray = [
         'controller' => 'AuthorController',
         'action' => 'remove'
     ],
+    [
+        'path' => '/admin/articles',
+        'controller' => 'ArticleController',
+        'action' => 'index'
+    ],
+    [
+        'path' => '/admin/add_article',
+        'controller' => 'ArticleController',
+        'action' => 'add'
+    ],
+    [
+        'path' => '/admin/edit_article',
+        'controller' => 'ArticleController',
+        'action' => 'edit'
+    ],
+    [
+        'path' => '/admin/delete_article',
+        'controller' => 'ArticleController',
+        'action' => 'delete'
+    ],
+    [
+        'path' => '/admin/article/insert',
+        'controller' => 'ArticleController',
+        'action' => 'insert'
+    ],
+    [
+        'path' => '/admin/article/update',
+        'controller' => 'ArticleController',
+        'action' => 'update'
+    ],
+    [
+        'path' => '/admin/article/delete',
+        'controller' => 'ArticleController',
+        'action' => 'remove'
+    ],
 ];
 
 foreach ($routesArray as $route) {

@@ -1,41 +1,34 @@
-<?php
-    include_once './views/includes/boostrap.php';
-    include APP_ROOT . '/views/includes/headerAdmin.php';
-?>
+{% include 'includes/headerAdmin.twig' %}
+
 <main class="container mt-5 mb-5">
-    <?php
-        if(isset($_GET['error'])){
-            echo "<script>alert({$_GET['error']})</script>";
-        }
-    ?>
     <div class="row">
         <div class="col-sm">
             <h3 class="text-center text-uppercase fw-bold">Thêm bài viết</h3>
-            <form action="?controller=article&action=insert" method="post" enctype="multipart/form-data">
+            <form action="./article/insert" method="post" enctype="multipart/form-data">
                 <div class="input-group mt-3 mb-3">
                     <span class="input-group-text" id="lblCatName">Tên bài viết</span>
-                    <input type="text" class="form-control" name="tieude" value="<?= '' ?>">
+                    <input type="text" class="form-control" name="tieude" value="">
                 </div>
 
                 <div class="input-group mt-3 mb-3">
                     <span class="input-group-text" id="lblSongName">Tên bài hát</span>
-                    <input type="text" class="form-control" name="ten_bhat" value="<?= '' ?>">
+                    <input type="text" class="form-control" name="ten_bhat" value="">
                 </div>
 
                 <div class="input-group mt-3 mb-3">
                     <span class="input-group-text" id="lblCategory">Thể loại</span>
                     <select id="categories" class="px-2" name="ma_tloai">
-                        <?php foreach ($categories as $category) { ?>
-                        <option value="<?= $category['ma_tloai'] ?>">
-                            <?= $category['ten_tloai'] ?>
-                        </option>
-                        <?php } ?>
+                        {% for category in categories %}
+                            <option value="{{ category.getId() }}">
+                                {{ category.getName() }}
+                            </option>
+                        {% endfor %}
                     </select>
                 </div>
 
                 <div class="input-group mt-3 mb-3">
                     <span class="input-group-text" id="lblCatName">Tóm tắt</span>
-                    <textarea class="form-control" aria-label="With textarea" name="tomtat"><?= '' ?></textarea>
+                    <textarea class="form-control" aria-label="With textarea" name="tomtat"></textarea>
                 </div>
 
                 <div class="input-group mt-3 mb-3 flex-nowrap">
@@ -46,11 +39,11 @@
                 <div class="input-group mt-3 mb-3">
                     <span class="input-group-text" id="lblCatName">Tác giả</span>
                     <select id="authors" class="px-2" name="ma_tgia">
-                        <?php foreach ($authors as $author) { ?>
-                        <option value="<?= $author['ma_tgia'] ?>">
-                            <?= $author['ten_tgia'] ?>
-                        </option>
-                        <?php } ?>
+                        {% for author in authors %}
+                            <option value="{{ author.getId() }}">
+                                {{ author.getName() }}
+                            </option>
+                        {% endfor %}
                     </select>
                 </div>
 
@@ -66,12 +59,11 @@
 
                 <div class="form-group  float-end ">
                     <input type="submit" name="submit" value="Thêm bài viết" class="btn btn-success">
-                    <a href="article.php" class="btn btn-warning ">Quay lại</a>
+                    <a href="./articles" class="btn btn-warning ">Quay lại</a>
                 </div>
             </form>
         </div>
     </div>
 </main>
-<?php
-    include APP_ROOT . '/views/includes/footer.php';
-?>
+
+{% include 'includes/footer.twig' %}

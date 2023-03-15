@@ -1,13 +1,23 @@
 <?php
-// include 'views/includes/boostrap.php';
+
+require_once './vendor/autoload.php';
+
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Symfony\Component\HttpFoundation\Response;
+
 class ArticleController
 {
+    private $twig;
     private $articleService;
     private $categoryService;
     private $authorService;
 
     public function __construct()
     {
+        $loader = new FilesystemLoader('views');
+        $this->twig = new Environment($loader);
+
         $this->articleService = new ArticleService();
         $this->categoryService = new CategoryService();
         $this->authorService = new AuthorService();
@@ -15,17 +25,36 @@ class ArticleController
 
     public function index()
     {
-        $data = $this->articleService->getAll();
+        AuthController::checkUser();
 
-        include("views/admin/article/article.php");
+        $articles = $this->articleService->getAll();
+
+        $content = $this->twig->render('admin/article/article.twig', [
+            'articles' => $articles,
+            'APP_ROOT' => $_SERVER['REQUEST_URI'],
+        ]);
+        $response = new Response($content);
+        return $response;
     }
 
     public function add()
     {
+        AuthController::checkUser();
+
+        if (isset($_GET['error'])) {
+            echo "<script>alert({$_GET['error']})</script>";
+        }
+
         $categories = $this->categoryService->getAll();
         $authors = $this->authorService->getAll();
 
-        include("views/admin/article/add_article.php");
+        $content = $this->twig->render('admin/article/add_article.twig', [
+            'categories' => $categories,
+            'authors' => $authors,
+            'APP_ROOT' => $_SERVER['REQUEST_URI'],
+        ]);
+        $response = new Response($content);
+        return $response;
     }
 
     public function insert()
@@ -35,15 +64,31 @@ class ArticleController
 
     public function edit()
     {
+        AuthController::checkUser();
+
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-        if (!$id) header("Location: ?controller=article");
+        if (!$id) header("Location: ./articles");
+
+        if (isset($_GET['error'])) {
+            echo "<script>alert({$_GET['error']})</script>";
+        }
 
         $article = $this->articleService->get($id);
         $categories = $this->categoryService->getAll();
         $authors = $this->authorService->getAll();
 
-        include("views/admin/article/edit_article.php");
+        $article_date = date_format(date_create($article->getDate()), "Y-m-d");
+
+        $content = $this->twig->render('admin/article/edit_article.twig', [
+            'article' => $article,
+            'article_date' => $article_date,
+            'categories' => $categories,
+            'authors' => $authors,
+            'APP_ROOT' => $_SERVER['REQUEST_URI'],
+        ]);
+        $response = new Response($content);
+        return $response;
     }
 
     public function update()
@@ -53,14 +98,16 @@ class ArticleController
 
     public function delete()
     {
+        AuthController::checkUser();
+
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-        if (!$id) header("Location: ?controller=article");
+        if (!$id) header("Location: ./articles");
 
         echo "
         <script> if (confirm('Are you sure you want to delete this item?')) 
-            window.location.href = '?controller=article&action=remove&id=$id';
-        else window.location.href = '?controller=article';
+            window.location.href = './article/delete?id=$id';
+        else window.location.href = './articles';
         </script>";
     }
 

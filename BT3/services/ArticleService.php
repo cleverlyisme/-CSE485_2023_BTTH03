@@ -112,14 +112,14 @@ class ArticleService
             $ngayviet = $_POST["ngayviet"];
 
             if ($tieude == '' || $ten_bhat == '' || $tomtat == '' || $ngayviet == '') {
-                header("Location: ./?error='Giá trị không hợp lệ'");
+                header("Location: ../add_article?error='Giá trị không hợp lệ'");
                 exit();
             }
 
             if (!basename($_FILES["imgUpload"]["name"])) {
                 $sql = "INSERT INTO baiviet (tieude, ten_bhat, ma_tloai, tomtat, noidung, ma_tgia, ngayviet) VALUE (:tieude, :ten_bhat, :ma_tloai, :tomtat, :noidung, :ma_tgia, :ngayviet);";
 
-                $result = $this->db->runSql($sql, [
+                $result = $this->db->runSQL($sql, [
                     'tieude' => $tieude,
                     'ten_bhat' => $ten_bhat,
                     'ma_tloai' => $ma_tloai,
@@ -129,21 +129,29 @@ class ArticleService
                     'ngayviet' => $ngayviet,
                 ]);
 
-                if ($result) header("Location: ?controller=article");
-                else header("Location: ?controller=article&error='Theem thất bại'");
+                if ($result) {
+                    header("Location: ../articles");
+                    exit();
+                }
+                header("Location: ../add_article?error='Thêm thất bại'");
+                exit();
             } else {
                 $check = getimagesize($_FILES["imgUpload"]["tmp_name"]);
-                if (!$check)
-                    header("Location: ?controller=article&action=edit&id=$ma_bviet&error='File is not an image.'");
 
-                if (
-                    $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-                    && $imageFileType != "gif"
-                )
-                    header("Location: ?controller=article&action=edit&id=$ma_bviet&error='Sorry, only JPG, JPEG, PNG & GIF files are allowed.'");
+                if (!$check) {
+                    header("Location: ../add_article?error='File is not an image.'");
+                    exit();
+                }
+
+                if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                    header("Location: ../add_article?error='Sorry, only JPG, JPEG, PNG & GIF files are allowed.'");
+                    exit();
+                }
 
                 if (move_uploaded_file($_FILES["imgUpload"]["tmp_name"], $target_file)) {
-                    $result = $this->articleModel->insert([
+                    $sql = "INSERT INTO baiviet (tieude, ten_bhat, ma_tloai, tomtat, noidung, ma_tgia, ngayviet, hinhanh) VALUE (:tieude, :ten_bhat, :ma_tloai, :tomtat, :noidung, :ma_tgia, :ngayviet, :hinhanh);";
+
+                    $arguments = [
                         'tieude' => $tieude,
                         'ten_bhat' => $ten_bhat,
                         'ma_tloai' => $ma_tloai,
@@ -152,13 +160,19 @@ class ArticleService
                         'ma_tgia' => $ma_tgia,
                         'ngayviet' => $ngayviet,
                         'hinhanh' => basename($_FILES["imgUpload"]["name"])
-                    ]);
+                    ];
 
-                    if ($result) header("Location: ?controller=article");
-                    else header("Location: ?controller=article&error='Thêm thất bại'");
-                } else {
-                    header("Location: ?controller=article&error='Thêm thất bại'");
+                    $result = $this->db->runSQL($sql, $arguments);
+
+                    if ($result) {
+                        header("Location: ../articles");
+                        exit();
+                    }
+                    header("Location: ../add_article?error='Thêm thất bại'");
+                    exit();
                 }
+                header("Location: ../add_article?error='Thêm thất bại'");
+                exit();
             }
         }
     }
@@ -180,12 +194,14 @@ class ArticleService
             $ngayviet = $_POST["ngayviet"];
 
             if ($tieude == '' || $ten_bhat == '' || $tomtat == '' || $ngayviet == '') {
-                header("Location: ?controller=article&action=edit&id=$ma_bviet&error='Giá trị không hợp lệ'");
+                header("Location: ../edit_article?id=$ma_bviet&error='Giá trị không hợp lệ'");
                 exit();
             }
 
             if (!basename($_FILES["imgUpload"]["name"])) {
-                $result = $this->articleModel->updateWithoutImg([
+                $sql = "UPDATE baiviet SET tieude=:tieude, ten_bhat=:ten_bhat, ma_tloai=:ma_tloai, tomtat=:tomtat, noidung=:noidung, ma_tgia=:ma_tgia, ngayviet=:ngayviet WHERE ma_bviet=:ma_bviet;";
+
+                $arguments = [
                     'tieude' => $tieude,
                     'ten_bhat' => $ten_bhat,
                     'ma_tloai' => $ma_tloai,
@@ -194,23 +210,32 @@ class ArticleService
                     'ma_tgia' => $ma_tgia,
                     'ngayviet' => $ngayviet,
                     'ma_bviet' => $ma_bviet
-                ]);
+                ];
 
-                if ($result) header("Location: ?controller=article");
-                else header("Location: ?controller=article&error='Cập nhật thất bại'");
+                $result = $this->db->runSQL($sql, $arguments);
+
+                if ($result) {
+                    header("Location: ../articles");
+                    exit();
+                }
+                header("Location: ../edit_article?id=$ma_bviet&error='Cập nhật thất bại'");
+                exit();
             } else {
                 $check = getimagesize($_FILES["imgUpload"]["tmp_name"]);
-                if (!$check)
-                    header("Location: ?controller=article&action=edit&id=$ma_bviet&error='File is not an image.'");
+                if (!$check) {
+                    header("Location: ../edit_article?id=$ma_bviet&error='File is not an image.'");
+                    exit();
+                }
 
-                if (
-                    $imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg"
-                    && $imageFileType != "gif"
-                )
-                    header("Location: ?controller=article&action=edit&id=$ma_bviet&error='Sorry, only JPG, JPEG, PNG & GIF files are allowed.'");
+                if ($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "jpeg" && $imageFileType != "gif") {
+                    header("Location: ../edit_article?id=$ma_bviet&error='Sorry, only JPG, JPEG, PNG & GIF files are allowed.'");
+                    exit();
+                }
 
                 if (move_uploaded_file($_FILES["imgUpload"]["tmp_name"], $target_file)) {
-                    $result = $this->articleModel->update([
+                    $sql = "UPDATE baiviet SET tieude=:tieude, ten_bhat=:ten_bhat, ma_tloai=:ma_tloai, tomtat=:tomtat, noidung=:noidung, ma_tgia=:ma_tgia, ngayviet=:ngayviet, hinhanh=:hinhanh WHERE ma_bviet=:ma_bviet;";
+
+                    $arguments = [
                         'tieude' => $tieude,
                         'ten_bhat' => $ten_bhat,
                         'ma_tloai' => $ma_tloai,
@@ -220,13 +245,19 @@ class ArticleService
                         'ngayviet' => $ngayviet,
                         'hinhanh' => basename($_FILES["imgUpload"]["name"]),
                         'ma_bviet' => $ma_bviet
-                    ]);
+                    ];
 
-                    if ($result) header("Location: ?controller=article");
-                    else header("Location: ?controller=article&error='Cập nhật thất bại'");
-                } else {
-                    header("Location: ?controller=article&error='Cập nhật ảnh thất bại'");
+                    $result = $this->db->runSQL($sql, $arguments);
+
+                    if ($result) {
+                        header("Location: ../articles");
+                        exit();
+                    }
+                    header("Location: ../edit_article?id=$ma_bviet&error='Cập nhật thất bại'");
+                    exit();
                 }
+                header("Location: ../edit_article?id=$ma_bviet&error='Cập nhật thất bại'");
+                exit();
             }
         }
     }
@@ -235,11 +266,19 @@ class ArticleService
     {
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-        if (!$id) header("Location: ?controller=article");
+        if (!$id) header("Location: ../articles");
 
-        $result = $this->articleModel->delete(['ma_bviet' => $id]);
+        $sql = "DELETE FROM baiviet WHERE ma_bviet=:ma_bviet;";
 
-        if ($result) header("Location: ?controller=article");
-        else header("Location: ?controller=article&error='Xóa thất bại'");
+        $arguments = ['ma_bviet' => $id];
+
+        $result = $this->db->runSql($sql, $arguments);
+
+        if ($result) {
+            header("Location: ../articles");
+            exit();
+        }
+        header("Location: ../articles?error='Xóa thất bại'");
+        exit();
     }
 }

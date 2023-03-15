@@ -1,0 +1,49 @@
+{% include 'includes/headerAdmin.twig' %}
+
+<main class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-sm">
+            <a href="./add_article" class="btn btn-success">Thêm mới</a>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Tiêu đề</th>
+                        <th scope="col">Tên bài hát</th>
+                        <th scope="col">Thể loại</th>
+                        <th scope="col">Tóm tắt</th>
+                        <th scope="col">Tác giả</th>
+                        <th scope="col">Ngày viết</th>
+                        <th scope="col">Hình ảnh</th>
+                        <th scope="col">Sửa</th>
+                        <th scope="col">Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for article in articles %}
+                    <tr>
+                        <th scope="row">{{ article.getId() }}</th>
+                        <td scope="row">{{ article.getTitle() }}</td>
+                        <td scope="row">{{ article.getSongName() }}</td>
+                        <td scope="row">{{ article.getCategoryName() }}</td>
+                        <td scope="row">{{ article.getBrief() }}</td>
+                        <td scope="row">{{ article.getAuthorName() }}</td>
+                        <td scope="row">{{ article.getDate() }}</td>
+                        <td scope="row" class="song-img">
+                            <img src="../assets/images/songs/{{ article.getImage() }}" alt="Bài viết">
+                        </td>
+                        <td>
+                            <a href="./edit_article?id={{ article.getId() }}"><i class="fa-solid fa-pen-to-square"></i></a>
+                        </td>
+                        <td>
+                            <a href="./delete_article?id={{ article.getId() }}"><i class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+{% include 'includes/footer.twig' %}
