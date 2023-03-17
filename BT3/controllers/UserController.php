@@ -1,63 +1,79 @@
 <?php
+
+require_once './vendor/autoload.php';
+
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
+use Symfony\Component\HttpFoundation\Response;
+
 class UserController
 {
+    private $twig;
+    private $userService;
+
+    public function __construct()
+    {
+        $loader = new FilesystemLoader('views');
+        $this->twig = new Environment($loader);
+
+        $this->userService = new UserService();
+    }
+
     public function index()
     {
-        $users = User::getAll();
-        // Render a Twig template with the list of users
-        // ...
+        AuthController::checkUser();
+
+        if (isset($_GET['error'])) {
+            echo "<script>alert({$_GET['error']})</script>";
+        }
+
+        $users = $this->userService->getAll();
+
+        $content = $this->twig->render('admin/user/user.twig', [
+            'users' => $users,
+            'APP_ROOT' => $_SERVER['REQUEST_URI'],
+        ]);
+        $response = new Response($content);
+        return $response;
     }
 
-    public function show($id)
+    public function add()
     {
-        $user = User::getById($id);
-        // Render a Twig template with the user's details
-        // ...
+        AuthController::checkUser();
+
+        if (isset($_GET['error'])) {
+            echo "<script>alert({$_GET['error']})</script>";
+        }
+
+        $content = $this->twig->render('admin/user/add_user.twig', [
+            'APP_ROOT' => $_SERVER['REQUEST_URI'],
+        ]);
+        $response = new Response($content);
+        return $response;
     }
 
-    public function create()
+    public function insert()
     {
-        // Render a Twig template with a form to create a new user
-        // ...
-    }
-
-    public function store()
-    {
-        $name = $_POST['name'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        $user = new User($name, $email, $password);
-        $user->save();
-        // Redirect to the user's details page
-        // ...
-    }
-
-    public function edit($id)
-    {
-        $user = User::getById($id);
-        // Render a Twig template with a form to edit the user's details
-        // ...
-    }
-
-    public function update($id)
-    {
-        $name = $_POST['name'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        $user = User::getById($id);
-        $user->setName($name);
-        $user->setEmail($email);
-        $user->setPassword($password);
-        $user->save();
-        // Redirect to the user's details page
-        // ...
+        $this->userService->insert();
     }
 
     public function delete($id)
     {
-        $user = User::getById($id);
-        $user->delete();
-        // Redirect to the list of users
-        // ...
+        AuthController::checkUser();
+
+        $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+
+        if (!$id) header("Location: ./users");
+
+        echo "
+        <script> if (confirm('Are you sure you want to delete this item?')) 
+            window.location.href = './user/delete?id=$id';
+        else window.location.href = './users';
+        </script>";
+    }
+
+    public function remove()
+    {
+        $this->userService->delete();
     }
 }

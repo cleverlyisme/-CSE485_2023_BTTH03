@@ -1,0 +1,35 @@
+{% include 'includes/headerAdmin.twig' %}
+
+<main class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-sm">
+            <h3 class="text-center text-uppercase fw-bold">Thêm mới thể loại</h3>
+            <form action="./user/insert" method="post" enctype="multipart/form-data">
+                <div class="input-group mt-3 mb-3">
+                    <span class="input-group-text" id="lblCatName">Tên người dùng</span>
+                    <input type="text" name="username" class="form-control">
+                </div>
+
+                <div class="input-group mt-3 mb-3">
+                    <span class="input-group-text" id="lblCatName">Email</span>
+                    <input type="email" name="email" class="form-control">
+                </div>
+
+                <div class="input-group mt-3 mb-3">
+                    <span class="input-group-text" id="lblCatName">Mật khẩu</span>
+                    <input type="password" name="password" class="form-control">
+                </div>
+
+                <div class="input-group mt-3 mb-3">
+                    <span class="input-group-text" id="lblCatName">Nhập lại mật khẩu</span>
+                    <input type="password" name="re_enter_password" class="form-control">
+                </div>
+
+                <button class="btn btn-success" type="submit">Thêm</button>
+                <a href="./users" class="btn btn-warning ">Quay lại</a>
+            </form>
+        </div>
+    </div>
+</main>
+
+{% include 'includes/footer.twig' %}

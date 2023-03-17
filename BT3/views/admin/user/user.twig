@@ -1,0 +1,34 @@
+{% include 'includes/headerAdmin.twig' %}
+
+<main class="container mt-5 mb-5">
+    <div class="row">
+        <div class="col-sm">
+            <a href="./add_user" class="btn btn-success">Thêm mới</a>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Tên người dùng</th>
+                        <th scope="col">Email</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <th>{{ user.getId() }}</th>
+                        <td>{{ user.getName() }}</td>
+                        <td>{{ user.getEmail() }}</td>
+                        <td>
+                            <a href="./delete_user?id={{ user.getId() }}" name="delete"><i
+                                    class="fa-solid fa-trash"></i></a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+{% include 'includes/footer.twig' %}

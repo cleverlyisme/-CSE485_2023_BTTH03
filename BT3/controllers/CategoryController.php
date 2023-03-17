@@ -86,7 +86,7 @@ class CategoryController
 
         $id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
 
-        if (!$id) header("Location: ?controller=category");
+        if (!$id) header("Location: ./categories");
 
         echo "
         <script> if (confirm('Are you sure you want to delete this item?')) 

@@ -7,6 +7,11 @@ $routes = new RouteCollection();
 
 $routesArray = [
     [
+        'path' => '/',
+        'controller' => 'HomeController',
+        'action' => 'index'
+    ],
+    [
         'path' => '/home',
         'controller' => 'HomeController',
         'action' => 'index'
@@ -145,6 +150,46 @@ $routesArray = [
         'path' => '/admin/article/delete',
         'controller' => 'ArticleController',
         'action' => 'remove'
+    ],
+    [
+        'path' => '/admin/users',
+        'controller' => 'UserController',
+        'action' => 'index'
+    ],
+    [
+        'path' => '/admin/add_user',
+        'controller' => 'UserController',
+        'action' => 'add'
+    ],
+    [
+        'path' => '/admin/edit_user',
+        'controller' => 'UserController',
+        'action' => 'edit'
+    ],
+    [
+        'path' => '/admin/delete_user',
+        'controller' => 'UserController',
+        'action' => 'delete'
+    ],
+    [
+        'path' => '/admin/user/insert',
+        'controller' => 'UserController',
+        'action' => 'insert'
+    ],
+    [
+        'path' => '/admin/user/update',
+        'controller' => 'UserController',
+        'action' => 'update'
+    ],
+    [
+        'path' => '/admin/user/delete',
+        'controller' => 'UserController',
+        'action' => 'remove'
+    ],
+    [
+        'path' => '/{undefinedRoute}',
+        'controller' => 'HomeController',
+        'action' => 'index'
     ],
 ];
 
